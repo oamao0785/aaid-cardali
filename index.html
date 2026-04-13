@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Diagnóstico de Adopción IA — Cardali Group</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #1e40af;
-      --primary-light: #3b82f6;
-      --primary-dark: #1e3a8a;
+      --primary: #2ea3f2;
+      --primary-light: #5bb8f5;
+      --primary-dark: #0d8fda;
       --success: #059669;
       --success-light: #d1fae5;
       --warning: #d97706;
@@ -17,13 +18,13 @@
       --danger-light: #fee2e2;
       --purple: #7c3aed;
       --purple-light: #ede9fe;
-      --bg: #f1f5f9;
+      --bg: #f5f7fa;
       --card: #ffffff;
-      --text: #0f172a;
-      --text-mid: #334155;
-      --text-muted: #64748b;
+      --text: #333333;
+      --text-mid: #555555;
+      --text-muted: #666666;
       --border: #e2e8f0;
-      --border-focus: #3b82f6;
+      --border-focus: #2ea3f2;
       --radius: 14px;
       --radius-sm: 8px;
       --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
@@ -33,7 +34,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -87,9 +88,9 @@
 
     /* ===== HEADER ===== */
     .header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 60%, #2563eb 100%);
+      background: linear-gradient(135deg, #0a7abf 0%, #1a94e0 60%, #2ea3f2 100%);
       color: white; padding: 0 24px;
-      box-shadow: 0 2px 16px rgba(30,58,138,0.3);
+      box-shadow: 0 2px 16px rgba(46,163,242,0.3);
     }
     .header-content {
       max-width: 860px; margin: 0 auto;
@@ -160,7 +161,7 @@
     }
     .step-item.active .step-circle {
       background: var(--primary); border-color: var(--primary);
-      color: white; box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
+      color: white; box-shadow: 0 0 0 4px rgba(46,163,242,0.2);
     }
     .step-item.done .step-circle {
       background: var(--success); border-color: var(--success); color: white;
@@ -190,7 +191,7 @@
     }
     .section-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(59,130,246,0.1);
+      background: rgba(46,163,242,0.1);
       color: var(--primary); font-size: 12px; font-weight: 700;
       padding: 4px 12px; border-radius: 20px;
       text-transform: uppercase; letter-spacing: 0.5px;
@@ -234,7 +235,7 @@
     }
     input:focus, select:focus, textarea:focus {
       outline: none; border-color: var(--primary-light);
-      background: white; box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+      background: white; box-shadow: 0 0 0 3px rgba(46,163,242,0.12);
     }
     textarea { resize: vertical; min-height: 88px; }
     select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
@@ -257,7 +258,7 @@
     }
     .ai-level-label:hover { border-color: var(--primary-light); background: white; }
     .ai-level-option:checked + .ai-level-label {
-      border-color: var(--primary); background: rgba(59,130,246,0.06);
+      border-color: var(--primary); background: rgba(46,163,242,0.06);
     }
     .ai-level-num {
       font-size: 20px; font-weight: 800; color: var(--primary);
@@ -297,7 +298,7 @@
       cursor: pointer; width: 100%;
       transition: all 0.2s; justify-content: center;
     }
-    .btn-add:hover { border-color: var(--primary-light); background: rgba(59,130,246,0.04); }
+    .btn-add:hover { border-color: var(--primary-light); background: rgba(46,163,242,0.04); }
     .btn-add:disabled { opacity: 0.45; cursor: not-allowed; }
 
     /* ===== DOLORES ===== */
@@ -311,7 +312,7 @@
     }
     .dolor-card.active {
       border-color: var(--primary-light);
-      background: rgba(59,130,246,0.04);
+      background: rgba(46,163,242,0.04);
     }
     .dolor-header {
       display: flex; align-items: flex-start; gap: 10px;
@@ -370,7 +371,7 @@
     .btn-prev:hover { background: #f8fafc; border-color: #cbd5e1; }
     .btn-next {
       background: var(--primary); color: white;
-      box-shadow: 0 2px 8px rgba(30,64,175,0.3);
+      box-shadow: 0 2px 8px rgba(46,163,242,0.4);
     }
     .btn-next:hover { background: var(--primary-dark); }
     .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -413,7 +414,7 @@
 
     /* POA Gauge */
     .poa-section {
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background: linear-gradient(135deg, #0a7abf, #2ea3f2);
       border-radius: var(--radius); padding: 36px 32px;
       color: white; display: flex; align-items: center; gap: 40px;
       margin-bottom: 24px;
@@ -495,7 +496,7 @@
       margin-bottom: 24px;
     }
     .roadmap-table thead tr {
-      background: linear-gradient(90deg, #1e40af, #2563eb);
+      background: linear-gradient(90deg, #0d8fda, #2ea3f2);
       color: white;
     }
     .roadmap-table th {
@@ -515,14 +516,14 @@
       font-size: 12px; font-weight: 800; color: white;
       flex-shrink: 0;
     }
-    .bloque-fundamentos .week-num { background: #3b82f6; }
+    .bloque-fundamentos .week-num { background: #2ea3f2; }
     .bloque-practica .week-num { background: #8b5cf6; }
     .bloque-consolidacion .week-num { background: #10b981; }
     .bloque-tag {
       display: inline-block; padding: 2px 10px; border-radius: 20px;
       font-size: 11px; font-weight: 700;
     }
-    .tag-fundamentos { background: rgba(59,130,246,0.12); color: #2563eb; }
+    .tag-fundamentos { background: rgba(46,163,242,0.12); color: #0d8fda; }
     .tag-practica { background: rgba(139,92,246,0.12); color: #7c3aed; }
     .tag-consolidacion { background: rgba(16,185,129,0.12); color: #059669; }
     .week-cell { display: flex; align-items: center; gap: 10px; }
@@ -569,7 +570,7 @@
 <header class="header">
   <div class="header-content">
     <div class="brand">
-      <div class="brand-diamond">◆</div>
+      <img src="https://cardaligroup.com/wp-content/uploads/fav_logo_cg.png" alt="Cardali Group" style="width:36px;height:36px;border-radius:8px;object-fit:contain;background:white;padding:3px;">
       <span>Cardali Group</span>
     </div>
     <div class="header-title">Diagnóstico de Adopción IA — Sistema AAID</div>
