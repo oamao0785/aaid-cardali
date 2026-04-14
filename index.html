@@ -628,11 +628,12 @@
           <label>Antigüedad en la empresa</label>
           <select id="p1_antiguedad">
             <option value="">Seleccionar...</option>
-            <option value="menos_1">Menos de 1 año</option>
-            <option value="1_3">1 a 3 años</option>
-            <option value="3_5">3 a 5 años</option>
-            <option value="5_10">5 a 10 años</option>
-            <option value="mas_10">Más de 10 años</option>
+            <option value="1 año">1 año</option>
+            <option value="2 años">2 años</option>
+            <option value="3 años">3 años</option>
+            <option value="4 años">4 años</option>
+            <option value="5 años">5 años</option>
+            <option value="Más de 5 años">Más de 5 años</option>
           </select>
         </div>
       </div>
@@ -896,34 +897,34 @@
 
     <div id="analysisWaiting" class="card analysis-waiting">
       <div class="analysis-waiting-icon">🚀</div>
-      <h3>¡Todo listo para el análisis!</h3>
-      <p>Haz clic en el botón <strong>"Generar Diagnóstico IA"</strong> para que Claude analice tu perfil completo y genere tu Plan Operativo de Adopción personalizado.</p>
+      <h3>¡Todo listo!</h3>
+      <p>Al hacer clic en el botón, tu información será procesada y registrada. Este proceso toma aproximadamente 30 segundos.</p>
       <br>
       <button class="btn btn-analyze" onclick="ejecutarAnalisis()" style="margin:0 auto; display:flex">
-        ✨ Generar Diagnóstico IA
+        ✨ Enviar Diagnóstico
       </button>
     </div>
 
     <div id="analysisLoading" class="analysis-loading">
       <div class="spinner"></div>
-      <p style="font-size:16px; font-weight:600; color:var(--text-mid)">Analizando tu perfil con IA...</p>
+      <p style="font-size:16px; font-weight:600; color:var(--text-mid)">Procesando tu información...</p>
       <div class="loading-steps">
         <div class="loading-step" id="ls1">📋 Procesando datos del empleado...</div>
         <div class="loading-step" id="ls2">⚙️ Evaluando funciones y procesos...</div>
-        <div class="loading-step" id="ls3">🎯 Identificando dolores y oportunidades...</div>
-        <div class="loading-step" id="ls4">🤖 Generando diagnóstico con Claude...</div>
-        <div class="loading-step" id="ls5">📊 Construyendo ruta de 12 semanas...</div>
+        <div class="loading-step" id="ls3">🎯 Analizando dolores y oportunidades...</div>
+        <div class="loading-step" id="ls4">🤖 Generando diagnóstico...</div>
+        <div class="loading-step" id="ls5">💾 Guardando resultados...</div>
       </div>
     </div>
 
     <div id="analysisError" class="card analysis-error">
-      <p style="font-size:18px; font-weight:700; margin-bottom:8px">⚠️ Error al generar el análisis</p>
+      <p style="font-size:18px; font-weight:700; margin-bottom:8px">⚠️ Error al procesar</p>
       <p id="errorMsg" style="color:var(--text-muted); font-size:14px; margin-bottom:20px"></p>
       <button class="btn btn-analyze" onclick="ejecutarAnalisis()">Reintentar</button>
     </div>
 
     <div id="analysisResults" class="analysis-results">
-      <!-- Se genera dinámicamente -->
+      <!-- Mensaje de confirmación -->
     </div>
   </div>
 
@@ -944,7 +945,7 @@
 <script>
   // ===== CONFIGURACIÓN =====
   // PEGA TU API KEY DE ANTHROPIC AQUÍ ABAJO (entre las comillas)
-  const API_KEY = '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';
+  const PROXY_URL = 'https://script.google.com/macros/s/AKfycbyBSxx1byXrbMKd1ZI9YKbpX3QYXf4Pzl9uT3jaM7LGekp6Pr-2lJ6fjN7xZ-zoOoCJQQ/exec';
 
   // ===== ESTADO =====
   let pasoActual = 1;
@@ -1203,23 +1204,17 @@
       }
     });
 
-    // Paso 4
+    // Paso 4 — dolores como objeto indexado por tipo
     const dolorTypes = ['tiempo','error','cuello','costo','calidad','depend'];
-    const dolorNames = {
-      tiempo: 'Fuga de tiempo', error: 'Error humano',
-      cuello: 'Cuello de botella', costo: 'Costo alto',
-      calidad: 'Baja calidad', depend: 'Dependencia crítica'
-    };
-    const dolores = [];
+    const dolores = {};
     dolorTypes.forEach(t => {
-      if (document.getElementById(`ck_${t}`).checked) {
-        const imp = document.querySelector(`input[name="imp_${t}"]:checked`);
-        dolores.push({
-          tipo: dolorNames[t],
-          descripcion: document.getElementById(`dd_${t}`).value.trim(),
-          impacto: imp ? imp.value : 'no especificado'
-        });
-      }
+      const activo = document.getElementById(`ck_${t}`).checked;
+      const imp = document.querySelector(`input[name="imp_${t}"]:checked`);
+      dolores[t] = {
+        activo,
+        descripcion: activo ? document.getElementById(`dd_${t}`).value.trim() : '',
+        impacto: activo && imp ? imp.value : ''
+      };
     });
 
     return {
@@ -1253,9 +1248,15 @@
      Tiempo de ejecución: ${p.tiempo} horas`
     ).join('\n\n');
 
-    const dlTexto = dolores.map(d =>
-      `  - ${d.tipo} (Impacto: ${d.impacto}): ${d.descripcion}`
-    ).join('\n');
+    const dolorLabels = {
+      tiempo: 'Fuga de tiempo', error: 'Error humano',
+      cuello: 'Cuello de botella', costo: 'Costo alto',
+      calidad: 'Baja calidad', depend: 'Dependencia crítica'
+    };
+    const dlTexto = Object.entries(dolores)
+      .filter(([,v]) => v.activo)
+      .map(([k,v]) => `  - ${dolorLabels[k]} (Impacto: ${v.impacto}): ${v.descripcion}`)
+      .join('\n');
 
     return `Eres un consultor experto en adopción de inteligencia artificial para empresas. Analiza este perfil de empleado de Cardali Group y genera un diagnóstico estructurado de adopción IA.
 
@@ -1318,11 +1319,6 @@ REGLAS:
 
   // ===== EJECUTAR ANÁLISIS =====
   async function ejecutarAnalisis() {
-    if (!API_KEY || API_KEY === 'PEGA_TU_CLAVE_AQUI') {
-      alert('El sistema aún no está configurado. Contacta al administrador.');
-      return;
-    }
-
     const datos = recopilarDatos();
     const prompt = construirPrompt(datos);
 
@@ -1343,28 +1339,26 @@ REGLAS:
     });
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch(PROXY_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': API_KEY,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 4096,
-          messages: [{ role: 'user', content: prompt }]
+          prompt: prompt,
+          empleado: datos.empleado,
+          funciones: datos.funciones,
+          procesos: datos.procesos,
+          dolores: datos.dolores
         })
       });
 
       if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.error?.message || `Error HTTP ${response.status}`);
+        throw new Error(`Error de conexión HTTP ${response.status}`);
       }
 
       const result = await response.json();
-      const rawText = result.content[0].text.trim();
+      if (result.error) throw new Error(result.error);
+      if (!result.resultado) throw new Error('Respuesta vacía del servidor. Verifica la configuración del proxy.');
+      const rawText = result.resultado.trim();
 
       // Parsear JSON
       let analisis;
@@ -1398,122 +1392,33 @@ REGLAS:
     }
   }
 
-  // ===== RENDERIZAR RESULTADOS =====
+  // ===== PANTALLA DE CONFIRMACION =====
   function renderizarResultados(a, empleado) {
-    const score = Math.max(0, Math.min(100, parseInt(a.poa_score) || 0));
-    const scoreColor = score >= 80 ? '#059669' : score >= 60 ? '#2563eb' : score >= 40 ? '#d97706' : '#dc2626';
-    const arcLen = Math.PI * 90;
-    const filled = (score / 100) * arcLen;
-
-    const nivelColors = {
-      'Inicial': '#dc2626', 'En desarrollo': '#d97706',
-      'Intermedio': '#2563eb', 'Avanzado': '#059669', 'Líder': '#7c3aed'
-    };
-    const nivelColor = nivelColors[a.nivel_madurez] || '#2563eb';
-
-    // Oportunidades
-    const opsHTML = (a.oportunidades || []).slice(0,3).map((op, i) => `
-      <div class="op-card">
-        <div class="op-num">Oportunidad ${i+1}</div>
-        <div class="op-title">${op.titulo}</div>
-        <div class="op-desc">${op.descripcion}</div>
-        <div class="op-meta">
-          <div class="op-meta-row">
-            <span class="op-meta-key">Proceso:</span>
-            <span class="op-meta-val">${op.proceso}</span>
-          </div>
-          <div class="op-meta-row">
-            <span class="op-meta-key">Herramienta:</span>
-            <span class="op-meta-val">${op.herramienta}</span>
-          </div>
-          <div class="op-meta-row">
-            <span class="op-meta-key">Impacto:</span>
-            <span class="badge badge-${op.impacto}">${op.impacto?.charAt(0).toUpperCase()+op.impacto?.slice(1)}</span>
-          </div>
-          <div class="op-meta-row">
-            <span class="op-meta-key">Dificultad:</span>
-            <span class="badge badge-${op.dificultad}">${op.dificultad?.charAt(0).toUpperCase()+op.dificultad?.slice(1)}</span>
-          </div>
+    const container = document.getElementById('analysisResults');
+    container.innerHTML = `
+      <div class="card" style="text-align:center; padding:60px 40px;">
+        <div style="font-size:64px; margin-bottom:20px;">✅</div>
+        <h2 style="font-size:26px; font-weight:800; margin-bottom:12px; color:var(--text)">
+          ¡Diagnóstico completado!
+        </h2>
+        <p style="color:var(--text-muted); font-size:16px; max-width:420px; margin:0 auto 32px;">
+          Gracias <strong>${empleado.nombre}</strong>. Tu información ha sido registrada exitosamente. El equipo de Cardali Group se pondrá en contacto contigo próximamente.
+        </p>
+        <div style="background:#f0fdf4; border:1px solid #a7f3d0; border-radius:10px; padding:16px 24px; display:inline-block; margin-bottom:32px;">
+          <span style="color:#059669; font-weight:600; font-size:14px;">
+            Registro guardado correctamente
+          </span>
         </div>
-        <div class="op-ahorro">⏱ ${op.ahorro_estimado}</div>
-      </div>
-    `).join('');
-
-    // Roadmap
-    const bloqueClass = { 'Fundamentos': 'bloque-fundamentos', 'Práctica': 'bloque-practica', 'Consolidación': 'bloque-consolidacion' };
-    const bloqueTag = { 'Fundamentos': 'tag-fundamentos', 'Práctica': 'tag-practica', 'Consolidación': 'tag-consolidacion' };
-    const semanasHTML = (a.ruta_12_semanas || []).map(s => `
-      <tr class="${bloqueClass[s.bloque] || ''}">
-        <td><div class="week-cell"><div class="week-num">${s.semana}</div><span class="bloque-tag ${bloqueTag[s.bloque] || ''}">${s.bloque}</span></div></td>
-        <td>${s.actividad}</td>
-        <td>${s.herramienta}</td>
-        <td><span class="entregable-chip">${s.entregable}</span></td>
-      </tr>
-    `).join('');
-
-    const html = `
-      <!-- POA SCORE -->
-      <div class="poa-section">
-        <div class="poa-gauge-wrap">
-          <svg class="gauge-svg" viewBox="0 0 200 115" width="200" height="115">
-            <path d="M 15 105 A 90 90 0 0 1 185 105" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="18" stroke-linecap="round"/>
-            <path id="gaugeFill" d="M 15 105 A 90 90 0 0 1 185 105" fill="none"
-              stroke="${scoreColor}" stroke-width="18" stroke-linecap="round"
-              stroke-dasharray="0 ${arcLen}"/>
-            <text x="100" y="92" text-anchor="middle" class="gauge-num" id="gaugeNum">0</text>
-            <text x="100" y="110" text-anchor="middle" class="gauge-label">/ 100 — Índice POA</text>
-          </svg>
-        </div>
-        <div class="poa-info">
-          <h2>Diagnóstico de ${empleado.nombre}</h2>
-          <div class="poa-badge" style="background:rgba(255,255,255,0.2)">
-            <span style="width:8px;height:8px;border-radius:50%;background:${nivelColor};display:inline-block"></span>
-            ${a.nivel_madurez}
-          </div>
-          <div class="poa-desc">${a.poa_descripcion}</div>
-          <div class="poa-resumen">${a.resumen_ejecutivo}</div>
-        </div>
-      </div>
-
-      <!-- OPORTUNIDADES -->
-      <div class="section-title-sm">Top 3 Oportunidades de IA</div>
-      <div class="oportunidades-grid">${opsHTML}</div>
-
-      <!-- ROADMAP -->
-      <div class="section-title-sm">Ruta de Implementación — 12 Semanas</div>
-      <table class="roadmap-table">
-        <thead>
-          <tr>
-            <th>Semana / Bloque</th>
-            <th>Actividad principal</th>
-            <th>Herramienta</th>
-            <th>Entregable</th>
-          </tr>
-        </thead>
-        <tbody>${semanasHTML}</tbody>
-      </table>
-
-      <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:8px; padding-bottom:24px">
-        <button class="btn-print" onclick="window.print()">🖨 Imprimir diagnóstico</button>
-        <button class="btn btn-analyze" onclick="reiniciarFormulario()" style="font-size:14px;padding:10px 20px">
-          + Nuevo diagnóstico
+        <br>
+        <button class="btn btn-prev" onclick="reiniciarFormulario()" style="margin:0 auto; display:inline-flex;">
+          Enviar otro diagnóstico
         </button>
       </div>
     `;
-
-    const container = document.getElementById('analysisResults');
-    container.innerHTML = html;
     container.classList.add('visible');
-
-    // Animar gauge
-    setTimeout(() => {
-      const fill = document.getElementById('gaugeFill');
-      if (fill) fill.style.strokeDasharray = `${filled} ${arcLen}`;
-      animarNumero('gaugeNum', 0, score, 1500);
-    }, 100);
   }
 
-  function animarNumero(id, inicio, fin, duracion) {
+  function _unused(id, inicio, fin, duracion) {
     const el = document.getElementById(id);
     if (!el) return;
     const step = (fin - inicio) / (duracion / 16);
