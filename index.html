@@ -945,7 +945,7 @@
 <script>
   // ===== CONFIGURACIÓN =====
   // PEGA TU API KEY DE ANTHROPIC AQUÍ ABAJO (entre las comillas)
-  const PROXY_URL = 'https://script.google.com/macros/s/AKfycbyBSxx1byXrbMKd1ZI9YKbpX3QYXf4Pzl9uT3jaM7LGekp6Pr-2lJ6fjN7xZ-zoOoCJQQ/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkEXk-ATTGp34WOdWAck7DZy12CkQgHXSnoXO1lyJ5WuOGzWYz8KtUoNODbZi9r47PzQ/exec';
 
   // ===== ESTADO =====
   let pasoActual = 1;
@@ -1339,7 +1339,7 @@ REGLAS:
     });
 
     try {
-      const response = await fetch(PROXY_URL, {
+      const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
