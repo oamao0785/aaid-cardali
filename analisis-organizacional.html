@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis Organizacional AAID — Cardali Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #c0392b; --primary-light: #e74c3c; --primary-dark: #922b21;
+    --success: #059669; --success-light: #d1fae5;
+    --warning: #d97706; --warning-light: #fef3c7;
+    --danger: #c0392b; --danger-light: #fde8e8;
+    --bg: #f5f7fa; --card: #ffffff; --text: #333333;
+    --text-mid: #555555; --text-muted: #666666;
+    --border: #e2e8f0; --radius: 14px; --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 20px 48px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+
+  .header { background: #fff; padding: 0 24px; box-shadow: 0 2px 8px rgba(0,0,0,.08); border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+  .header-content { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 16px; padding: 16px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; color: #333; flex-shrink: 0; }
+  .brand img { width: 38px; height: 38px; object-fit: contain; }
+  .header-title { flex: 1; font-size: 15px; font-weight: 600; color: #555; }
+  .header-badge { background: var(--primary); color: #fff; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+  .header-btns { display: flex; gap: 10px; }
+  .btn-volver { padding: 8px 16px; background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
+  .btn-volver:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-pdf { padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .2s; }
+  .btn-pdf:hover { background: var(--primary-dark); }
+
+  .main { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .section-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(192,57,43,.08); color: var(--primary); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .section-desc { color: var(--text-muted); font-size: 15px; margin-bottom: 28px; }
+
+  .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); padding: 32px; margin-bottom: 20px; }
+
+  .btn-primary { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .2s; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+  .info-box { background: rgba(192,57,43,.05); border: 1px solid rgba(192,57,43,.15); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: var(--text-mid); }
+  .info-box strong { color: var(--primary); }
+  .error-box { background: var(--danger-light); color: var(--danger); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; margin-bottom: 16px; display: none; }
+
+  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.75); backdrop-filter: blur(6px); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
+  .loading-overlay.visible { display: flex; }
+  .spinner { width: 52px; height: 52px; border: 4px solid rgba(255,255,255,.2); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title { color: #fff; font-size: 18px; font-weight: 700; }
+  .loading-sub { color: rgba(255,255,255,.65); font-size: 13px; text-align: center; max-width: 340px; }
+
+  .analisis-contenido { display: none; }
+  .analisis-contenido.visible { display: block; }
+
+  /* PORTADA */
+  .portada { background: linear-gradient(135deg, #1a1a2e 0%, #922b21 60%, #c0392b 100%); border-radius: var(--radius); padding: 48px; margin-bottom: 24px; color: #fff; box-shadow: var(--shadow-lg); }
+  .portada-badge { display: inline-block; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); padding: 5px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
+  .portada h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .portada-sub { font-size: 16px; color: rgba(255,255,255,.75); margin-bottom: 28px; }
+  .portada-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 680px) { .portada-kpis { grid-template-columns: repeat(2,1fr); } }
+  .kpi-box { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 16px; text-align: center; }
+  .kpi-valor { font-size: 28px; font-weight: 800; }
+  .kpi-label { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* SECCIONES */
+  .seccion-header { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+  .seccion-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .seccion-titulo { font-size: 17px; font-weight: 800; }
+  .seccion-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .texto-analisis { font-size: 14px; line-height: 1.75; color: var(--text-mid); }
+
+  /* PATRON */
+  .patron-card { border-left: 4px solid; border-radius: 10px; padding: 20px; margin-bottom: 14px; }
+  .patron-critico { background: var(--danger-light); border-color: var(--danger); }
+  .patron-alto { background: #fff3e0; border-color: var(--warning); }
+  .patron-medio { background: var(--success-light); border-color: var(--success); }
+  .patron-nivel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+  .patron-critico .patron-nivel { color: var(--danger); }
+  .patron-alto .patron-nivel { color: var(--warning); }
+  .patron-medio .patron-nivel { color: var(--success); }
+  .patron-nombre { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+  .patron-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 10px; }
+  .patron-stat { }
+  .patron-stat-val { font-size: 20px; font-weight: 800; }
+  .patron-stat-label { font-size: 11px; color: var(--text-muted); }
+  .patron-critico .patron-stat-val { color: var(--danger); }
+  .patron-alto .patron-stat-val { color: var(--warning); }
+  .patron-medio .patron-stat-val { color: var(--success); }
+  .patron-desc { font-size: 13px; line-height: 1.6; color: var(--text-mid); }
+  .patron-deptos { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .depto-tag { background: rgba(0,0,0,.06); padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+  /* RIESGO */
+  .riesgo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 680px) { .riesgo-grid { grid-template-columns: 1fr; } }
+  .riesgo-card { border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .riesgo-tipo { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); margin-bottom: 8px; }
+  .riesgo-titulo { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .riesgo-impacto { font-size: 13px; color: var(--text-mid); line-height: 1.6; margin-bottom: 12px; }
+  .riesgo-num { font-size: 22px; font-weight: 800; color: var(--danger); }
+  .riesgo-num-label { font-size: 11px; color: var(--text-muted); }
+
+  /* DEPT TABLE */
+  .dept-table { width: 100%; border-collapse: collapse; }
+  .dept-table th { background: rgba(192,57,43,.08); color: var(--primary); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 10px 14px; text-align: left; }
+  .dept-table td { padding: 12px 14px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .dept-table tr:last-child td { border-bottom: none; }
+  .dept-table tr:nth-child(even) td { background: var(--bg); }
+  .nivel-badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .nivel-critico { background: var(--danger-light); color: var(--danger); }
+  .nivel-alto { background: var(--warning-light); color: var(--warning); }
+  .nivel-medio { background: var(--success-light); color: var(--success); }
+
+  /* PLAN ACCION */
+  .fase-card { border-radius: 10px; padding: 24px; margin-bottom: 16px; border: 1px solid var(--border); }
+  .fase-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .fase-num { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #fff; flex-shrink: 0; }
+  .fase-1 .fase-num { background: var(--danger); }
+  .fase-2 .fase-num { background: var(--warning); }
+  .fase-3 .fase-num { background: var(--success); }
+  .fase-titulo { font-size: 16px; font-weight: 800; }
+  .fase-periodo { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .accion-item { display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; }
+  .accion-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .fase-1 .accion-dot { background: var(--danger); }
+  .fase-2 .accion-dot { background: var(--warning); }
+  .fase-3 .accion-dot { background: var(--success); }
+  .accion-responsable { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+
+  /* SINCRONIA */
+  .sinc-card { border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start; }
+  .sinc-icon { width: 36px; height: 36px; background: rgba(192,57,43,.08); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .sinc-titulo { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .sinc-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* RECOMENDACION */
+  .rec-box { background: linear-gradient(135deg, #1a1a2e 0%, #922b21 100%); border-radius: var(--radius); padding: 32px; color: #fff; }
+  .rec-box h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: .6; margin-bottom: 14px; }
+  .rec-box p { font-size: 15px; line-height: 1.8; }
+
+  @media print {
+    .header .header-btns { display: none; }
+    .main { padding: 0; max-width: 100%; }
+    .card { box-shadow: none; break-inside: avoid; }
+    .portada, .patron-critico, .patron-alto, .patron-medio, .rec-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-content">
+    <div class="brand">
+      <img src="https://cardaligroup.com/wp-content/uploads/2024/05/fav_logo_cg.png" alt="Cardali" onerror="this.style.display='none'">
+      Cardali Group
+    </div>
+    <div class="header-title">Programa AAID — Análisis Organizacional</div>
+    <div class="header-badge" id="headerBadge">Vista General</div>
+    <div class="header-btns" id="headerBtns" style="display:none">
+      <button class="btn-volver" onclick="volver()">← Nuevo análisis</button>
+      <button class="btn-pdf" onclick="window.print()">⬇ Descargar PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-title">Generando análisis organizacional</div>
+  <div class="loading-sub">Claude está procesando todos los datos del equipo. Esto puede tomar hasta 40 segundos...</div>
+</div>
+
+<div class="main">
+  <div id="selectorPanel">
+    <div class="section-badge">Análisis Estratégico</div>
+    <div class="section-title">Diagnóstico Organizacional</div>
+    <div class="section-desc">Análisis completo del impacto colectivo de los problemas individuales sobre la operación de Cardali Group.</div>
+
+    <div class="card">
+      <div class="error-box" id="errorBox"></div>
+      <div class="info-box" id="infoBox">Cargando información de empleados registrados...</div>
+      <button class="btn-primary" id="btnGenerar" onclick="generarAnalisis()" disabled>
+        Generar Análisis Organizacional
+      </button>
+    </div>
+  </div>
+
+  <div id="analisisContenido" class="analisis-contenido"></div>
+</div>
+
+<script>
+  const PROXY_URL = 'https://script.google.com/macros/s/AKfycbyBSxx1byXrbMKd1ZI9YKbpX3QYXf4Pzl9uT3jaM7LGekp6Pr-2lJ6fjN7xZ-zoOoCJQQ/exec';
+  let totalEmpleados = 0;
+
+  window.onload = async function() {
+    try {
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ accion: 'listar_empleados' })
+      });
+      const data = await res.json();
+      const empleados = data.empleados || [];
+      totalEmpleados = empleados.length;
+      const info = document.getElementById('infoBox');
+      if (totalEmpleados === 0) {
+        info.innerHTML = '<strong>Sin datos:</strong> No hay empleados registrados en el sistema todavía.';
+      } else {
+        info.innerHTML = `<strong>${totalEmpleados} empleado(s) registrados</strong> en el sistema. El análisis procesará todos los datos disponibles para generar el diagnóstico organizacional completo.`;
+        document.getElementById('btnGenerar').disabled = false;
+      }
+    } catch(err) {
+      mostrarError('No se pudo conectar al sistema: ' + err.message);
+    }
+  };
+
+  async function generarAnalisis() {
+    ocultarError();
+    document.getElementById('loadingOverlay').classList.add('visible');
+    try {
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ accion: 'generar_analisis_org' })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      const analisis = parsearJSON(data.resultado);
+      const stats = data.stats || {};
+
+      document.getElementById('loadingOverlay').classList.remove('visible');
+      document.getElementById('selectorPanel').style.display = 'none';
+      document.getElementById('headerBadge').style.display = 'none';
+      document.getElementById('headerBtns').style.display = 'flex';
+      const cont = document.getElementById('analisisContenido');
+      cont.innerHTML = renderAnalisis(analisis, stats);
+      cont.classList.add('visible');
+    } catch(err) {
+      document.getElementById('loadingOverlay').classList.remove('visible');
+      mostrarError('Error: ' + err.message);
+    }
+  }
+
+  function volver() {
+    document.getElementById('analisisContenido').classList.remove('visible');
+    document.getElementById('analisisContenido').innerHTML = '';
+    document.getElementById('selectorPanel').style.display = 'block';
+    document.getElementById('headerBadge').style.display = 'flex';
+    document.getElementById('headerBtns').style.display = 'none';
+  }
+
+  function parsearJSON(txt) {
+    try { return JSON.parse(txt.trim()); }
+    catch(e) {
+      const m = txt.match(/\{[\s\S]*\}/);
+      if (m) return JSON.parse(m[0]);
+      throw new Error('No se pudo interpretar la respuesta.');
+    }
+  }
+
+  function mostrarError(msg) { const el=document.getElementById('errorBox'); el.textContent=msg; el.style.display='block'; }
+  function ocultarError() { document.getElementById('errorBox').style.display='none'; }
+  function cap(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+  function nivelCls(v) { const n=(v||'').toLowerCase(); return n==='critico'?'nivel-critico':n==='alto'?'nivel-alto':'nivel-medio'; }
+  function patronCls(v) { const n=(v||'').toLowerCase(); return n==='critico'?'patron-critico':n==='alto'?'patron-alto':'patron-medio'; }
+
+  function renderAnalisis(a, stats) {
+    const fecha = new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
+    let h = '';
+
+    // PORTADA
+    h += `<div class="portada">
+      <div class="portada-badge">Análisis Organizacional — Programa AAID</div>
+      <h1>Diagnóstico de Adopción IA</h1>
+      <div class="portada-sub">Cardali Group · ${fecha}</div>
+      <div class="portada-kpis">
+        <div class="kpi-box"><div class="kpi-valor">${stats.total_empleados||'—'}</div><div class="kpi-label">Empleados Analizados</div></div>
+        <div class="kpi-box"><div class="kpi-valor">${stats.promedio_poa||'—'}</div><div class="kpi-label">POA Score Promedio</div></div>
+        <div class="kpi-box"><div class="kpi-valor">${stats.total_departamentos||'—'}</div><div class="kpi-label">Departamentos</div></div>
+        <div class="kpi-box"><div class="kpi-valor">${stats.horas_perdidas_sem||'—'}h</div><div class="kpi-label">Horas Perdidas/Sem</div></div>
+      </div>
+    </div>`;
+
+    // DIAGNOSTICO GENERAL
+    if (a.diagnostico_general) {
+      h += `<div class="card">
+        <div class="seccion-header"><div class="seccion-icon" style="background:rgba(192,57,43,.08)">📊</div>
+        <div><div class="seccion-titulo">Diagnóstico General de la Organización</div><div class="seccion-sub">Estado actual de madurez IA en Cardali Group</div></div></div>
+        <p class="texto-analisis">${a.diagnostico_general}</p>
+      </div>`;
+    }
+
+    // PATRONES
+    if (a.patrones_criticos && a.patrones_criticos.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header"><div class="seccion-icon" style="background:var(--danger-light)">🔍</div>
+        <div><div class="seccion-titulo">Patrones Críticos Identificados</div><div class="seccion-sub">Problemas repetitivos ordenados por urgencia y frecuencia</div></div></div>`;
+      a.patrones_criticos.forEach(p => {
+        h += `<div class="patron-card ${patronCls(p.nivel_urgencia)}">
+          <div class="patron-nivel">Urgencia: ${cap(p.nivel_urgencia)}</div>
+          <div class="patron-nombre">${p.patron||''}</div>
+          <div class="patron-stats">
+            <div class="patron-stat"><div class="patron-stat-val">${p.frecuencia||'—'}</div><div class="patron-stat-label">Empleados afectados</div></div>
+            <div class="patron-stat"><div class="patron-stat-val">${p.porcentaje||'—'}</div><div class="patron-stat-label">Del total</div></div>
+            ${p.horas_impacto?`<div class="patron-stat"><div class="patron-stat-val">${p.horas_impacto}</div><div class="patron-stat-label">Horas/sem impactadas</div></div>`:''}
+          </div>
+          <div class="patron-desc">${p.descripcion||''}</div>
+          ${p.departamentos_afectados&&p.departamentos_afectados.length>0?`<div class="patron-deptos">${p.departamentos_afectados.map(d=>`<span class="depto-tag">${d}</span>`).join('')}</div>`:''}
+        </div>`;
+      });
+      h += '</div>';
+    }
+
+    // PANORAMA DE RIESGOS
+    if (a.panorama_riesgos) {
+      h += `<div class="card">
+        <div class="seccion-header"><div class="seccion-icon" style="background:var(--danger-light)">⚡</div>
+        <div><div class="seccion-titulo">Panorama de Riesgos y Pérdidas</div><div class="seccion-sub">Impacto cuantificado en tiempo, presupuesto y operación</div></div></div>`;
+      if (a.panorama_riesgos.resumen) {
+        h += `<p class="texto-analisis" style="margin-bottom:20px">${a.panorama_riesgos.resumen}</p>`;
+      }
+      if (a.panorama_riesgos.riesgos && a.panorama_riesgos.riesgos.length > 0) {
+        h += '<div class="riesgo-grid">';
+        a.panorama_riesgos.riesgos.forEach(r => {
+          h += `<div class="riesgo-card">
+            <div class="riesgo-tipo">${r.categoria||''}</div>
+            <div class="riesgo-titulo">${r.titulo||''}</div>
+            <div class="riesgo-impacto">${r.descripcion||''}</div>
+            ${r.cifra?`<div class="riesgo-num">${r.cifra}</div><div class="riesgo-num-label">${r.cifra_label||''}</div>`:''}
+          </div>`;
+        });
+        h += '</div>';
+      }
+      h += '</div>';
+    }
+
+    // ANALISIS POR DEPARTAMENTO
+    if (a.analisis_departamentos && a.analisis_departamentos.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header"><div class="seccion-icon" style="background:rgba(192,57,43,.08)">🏢</div>
+        <div><div class="seccion-titulo">Análisis por Departamento</div><div class="seccion-sub">Prioridad de intervención por área</div></div></div>
+        <table class="dept-table">
+          <thead><tr><th>Departamento</th><th>Empleados</th><th>POA Promedio</th><th>Principal Dolor</th><th>Prioridad</th></tr></thead>
+          <tbody>`;
+      a.analisis_departamentos.forEach(d => {
+        h += `<tr>
+          <td><strong>${d.nombre||''}</strong></td>
+          <td>${d.empleados||'—'}</td>
+          <td>${d.poa_promedio||'—'}</td>
+          <td>${d.principal_dolor||'—'}</td>
+          <td><span class="nivel-badge ${nivelCls(d.prioridad)}">${cap(d.prioridad)}</span></td>
+        </tr>`;
+      });
+      h += '</tbody></table></div>';
+    }
+
+    // PLAN DE ACCION ORGANIZACIONAL
+    if (a.plan_accion && a.plan_accion.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header"><div class="seccion-icon" style="background:var(--warning-light)">📋</div>
+        <div><div class="seccion-titulo">Plan de Acción Organizacional</div><div class="seccion-sub">Iniciativas estructuradas por fases, sincronizadas con los planes individuales</div></div></div>`;
+      a.plan_accion.forEach((fase, i) => {
+        const cls = 'fase-' + (i+1 <= 3 ? i+1 : 3);
+        h += `<div class="fase-card ${cls}">
+          <div class="fase-header">
+            <div class="fase-num">${i+1}</div>
+            <div><div class="fase-titulo">${fase.titulo||''}</div><div class="fase-periodo">${fase.periodo||''}</div></div>
+          </div>`;
+        if (fase.objetivo) h += `<p class="texto-analisis" style="margin-bottom:14px">${fase.objetivo}</p>`;
+        if (fase.acciones && fase.acciones.length > 0) {
+          fase.acciones.forEach(ac => {
+            h += `<div class="accion-item">
+              <div class="accion-dot"></div>
+              <div>
+                <div>${ac.descripcion||ac}</div>
+                ${ac.responsable?`<div class="accion-responsable">Responsable: ${ac.responsable}</div>`:''}
+              </div>
+            </div>`;
+          });
+        }
+        h += '</div>';
+      });
+      h += '</div>';
+    }
+
+    // SINCRONIA CON PLANES INDIVIDUALES
+    if (a.sincronia_individual && a.sincronia_individual.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header"><div class="seccion-icon" style="background:var(--success-light)">🔗</div>
+        <div><div class="seccion-titulo">Sincronía con Planes Individuales</div><div class="seccion-sub">Cómo el plan organizacional se conecta con cada empleado</div></div></div>`;
+      a.sincronia_individual.forEach(s => {
+        h += `<div class="sinc-card">
+          <div class="sinc-icon">👤</div>
+          <div><div class="sinc-titulo">${s.titulo||''}</div><div class="sinc-desc">${s.descripcion||''}</div></div>
+        </div>`;
+      });
+      h += '</div>';
+    }
+
+    // RECOMENDACION FINAL
+    if (a.recomendacion_gerencia) {
+      h += `<div class="rec-box">
+        <h3>Recomendación Estratégica para Gerencia</h3>
+        <p>${a.recomendacion_gerencia}</p>
+      </div>`;
+    }
+
+    return h;
+  }
+</script>
+</body>
+</html>
