@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis de Brecha — USO PRIVADO | Digital Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo: #c0392b;
+    --rojo-oscuro: #922b21;
+    --negro: #1a1a2e;
+    --gris: #f4f6f9;
+    --gris-medio: #e8ecf0;
+    --texto: #2c3e50;
+    --blanco: #ffffff;
+    --naranja: #e67e22;
+    --verde: #27ae60;
+    --azul: #2980b9;
+    --morado: #8e44ad;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: var(--gris);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* BANNER PRIVADO */
+  .banner-privado {
+    background: linear-gradient(135deg, #1a1a2e, #2c3e50);
+    color: #fff;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-bottom: 3px solid var(--rojo);
+  }
+  .banner-privado span { color: #ff6b6b; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--negro) 0%, #16213e 100%);
+    padding: 30px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid var(--rojo);
+  }
+  .header-left { display: flex; align-items: center; gap: 20px; }
+  .header-logo {
+    width: 50px; height: 50px; background: var(--rojo);
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 22px; font-weight: 800; color: #fff;
+  }
+  .header-title { color: #fff; }
+  .header-title h1 { font-size: 20px; font-weight: 800; }
+  .header-title p { font-size: 12px; color: #aaa; margin-top: 3px; }
+  .header-badge {
+    background: var(--rojo); color: #fff;
+    padding: 8px 16px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* MAIN */
+  .main { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+
+  /* INTRO CARD */
+  .intro-card {
+    background: linear-gradient(135deg, var(--negro), #16213e);
+    border-radius: 12px; padding: 30px;
+    border-left: 5px solid var(--rojo); margin-bottom: 30px; color: #fff;
+  }
+  .intro-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+  .intro-card p { font-size: 13px; line-height: 1.8; color: #ccc; }
+  .intro-card strong { color: #ff8a80; }
+
+  /* GENERATE BTN */
+  .btn-generate {
+    width: 100%; padding: 18px;
+    background: linear-gradient(135deg, var(--rojo), var(--rojo-oscuro));
+    color: #fff; border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    letter-spacing: 0.5px; transition: all 0.3s; margin-bottom: 30px;
+  }
+  .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(192,57,43,0.4); }
+  .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* LOADING */
+  .loading {
+    display: none; text-align: center; padding: 50px;
+    background: #fff; border-radius: 12px; margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .loading.active { display: block; }
+  .spinner {
+    width: 50px; height: 50px; border: 4px solid var(--gris-medio);
+    border-top: 4px solid var(--rojo); border-radius: 50%;
+    animation: spin 1s linear infinite; margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { color: #666; font-size: 14px; }
+  .loading .sub { font-size: 12px; color: #999; margin-top: 8px; }
+
+  /* RESULTADO */
+  #resultado { display: none; }
+  #resultado.visible { display: block; }
+
+  /* PORTADA */
+  .portada {
+    background: linear-gradient(135deg, var(--negro) 0%, #16213e 100%);
+    border-radius: 12px; padding: 40px; margin-bottom: 25px;
+    text-align: center; color: #fff;
+  }
+  .portada .etiqueta {
+    display: inline-block; background: rgba(192,57,43,0.3);
+    border: 1px solid var(--rojo); color: #ff8a80;
+    padding: 6px 16px; border-radius: 20px; font-size: 11px;
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .portada h1 { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+  .portada p { color: #aaa; font-size: 13px; }
+  .portada .fecha { color: #ff8a80; font-size: 12px; margin-top: 15px; font-weight: 600; }
+
+  /* SECCIONES */
+  .seccion {
+    background: #fff; border-radius: 12px; padding: 30px;
+    margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  .seccion-titulo {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 16px; font-weight: 800; color: var(--negro);
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--gris-medio);
+  }
+  .seccion-titulo .icono {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .icono-rojo { background: rgba(192,57,43,0.1); }
+  .icono-naranja { background: rgba(230,126,34,0.1); }
+  .icono-azul { background: rgba(41,128,185,0.1); }
+  .icono-verde { background: rgba(39,174,96,0.1); }
+  .icono-morado { background: rgba(142,68,173,0.1); }
+
+  /* CONTENIDO MARKDOWN */
+  .contenido { font-size: 13.5px; line-height: 1.9; color: var(--texto); }
+  .contenido h3 { font-size: 14px; font-weight: 700; color: var(--negro); margin: 16px 0 8px; }
+  .contenido h4 { font-size: 13px; font-weight: 700; color: var(--rojo); margin: 14px 0 6px; }
+  .contenido p { margin-bottom: 10px; }
+  .contenido ul, .contenido ol { padding-left: 20px; margin-bottom: 12px; }
+  .contenido li { margin-bottom: 6px; }
+  .contenido strong { color: var(--negro); font-weight: 700; }
+
+  /* OPORTUNIDADES */
+  .oportunidad-card {
+    border-radius: 10px; padding: 20px; margin-bottom: 16px;
+    border-left: 4px solid;
+  }
+  .oportunidad-card.alta { border-color: var(--rojo); background: #fff5f5; }
+  .oportunidad-card.media { border-color: var(--naranja); background: #fff8f0; }
+  .oportunidad-card.baja { border-color: var(--azul); background: #f0f7ff; }
+  .oportunidad-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .oportunidad-card.alta h4 { color: var(--rojo); }
+  .oportunidad-card.media h4 { color: var(--naranja); }
+  .oportunidad-card.baja h4 { color: var(--azul); }
+  .tag-impacto {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .tag-alto { background: rgba(192,57,43,0.15); color: var(--rojo); }
+  .tag-medio { background: rgba(230,126,34,0.15); color: var(--naranja); }
+  .tag-bajo { background: rgba(41,128,185,0.15); color: var(--azul); }
+
+  /* ALERTA */
+  .alerta-card {
+    background: linear-gradient(135deg, #fff5f5, #fff);
+    border-radius: 10px; padding: 18px 20px; margin-bottom: 12px;
+    border-left: 4px solid var(--rojo); display: flex; gap: 12px;
+  }
+  .alerta-icono { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .alerta-texto { font-size: 13px; line-height: 1.7; }
+
+  /* PROPUESTA */
+  .propuesta-card {
+    background: linear-gradient(135deg, var(--gris), #fff);
+    border-radius: 10px; padding: 20px; margin-bottom: 16px;
+    border: 1px solid var(--gris-medio); position: relative;
+  }
+  .propuesta-num {
+    position: absolute; top: -12px; left: 20px;
+    background: var(--rojo); color: #fff;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+  }
+  .propuesta-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; margin-top: 4px; }
+
+  /* ACCIONES PDF */
+  .acciones {
+    display: flex; gap: 12px; margin-bottom: 30px; justify-content: flex-end;
+  }
+  .btn-pdf {
+    padding: 12px 24px; background: var(--negro); color: #fff;
+    border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .btn-pdf:hover { background: var(--rojo); }
+  .btn-nuevo {
+    padding: 12px 24px; background: transparent; color: var(--texto);
+    border: 2px solid var(--gris-medio); border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+  }
+  .btn-nuevo:hover { border-color: var(--rojo); color: var(--rojo); }
+
+  /* ERROR */
+  .error-box {
+    background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 10px;
+    padding: 20px; color: #c62828; font-size: 13px; margin-bottom: 20px; display: none;
+  }
+  .error-box.visible { display: block; }
+
+  /* PRINT */
+  @media print {
+    .banner-privado, .btn-generate, .loading, .acciones, .header { display: none !important; }
+    body { background: #fff; }
+    .main { padding: 0; max-width: 100%; }
+    .seccion { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .portada { break-after: page; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner-privado">
+  <span>&#128274; DOCUMENTO CONFIDENCIAL</span> &nbsp;|&nbsp; USO EXCLUSIVO DEL CONSULTOR &nbsp;|&nbsp; Digital Pro Marketing & Service LLC
+</div>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">DP</div>
+    <div class="header-title">
+      <h1>Análisis de Brecha y Oportunidades Futuras</h1>
+      <p>Digital Pro Marketing & Service LLC &nbsp;|&nbsp; Cardali Group — Uso Privado</p>
+    </div>
+  </div>
+  <div class="header-badge">Confidencial</div>
+</div>
+
+<div class="main">
+
+  <div class="intro-card">
+    <h2>¿Qué hace este análisis?</h2>
+    <p>
+      Usando los datos del diagnóstico de empleados, Claude identifica el <strong>techo de capacidad real</strong> que el equipo alcanzará tras la capacitación,
+      y mapea las <strong>brechas críticas</strong> — procesos y necesidades que ningún empleado podrá resolver sin implementación profesional externa.
+      Este análisis es la base para construir <strong>propuestas de servicio futuras</strong> para Cardali Group.
+    </p>
+  </div>
+
+  <button class="btn-generate" id="btnGenerar" onclick="generarAnalisis()">
+    Generar Análisis de Brecha y Oportunidades
+  </button>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Analizando datos del diagnóstico...</p>
+    <p class="sub">Identificando brechas, techos de capacidad y oportunidades futuras</p>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div id="resultado">
+
+    <div class="portada">
+      <div class="etiqueta">Uso Privado — Consultor</div>
+      <h1>Análisis de Brecha Organizacional</h1>
+      <p>Cardali Group &nbsp;·&nbsp; Oportunidades de Implementación Futura</p>
+      <div class="fecha" id="fechaPortada"></div>
+    </div>
+
+    <div class="acciones">
+      <button class="btn-nuevo" onclick="reiniciar()">Nuevo Análisis</button>
+      <button class="btn-pdf" onclick="window.print()">Descargar PDF</button>
+    </div>
+
+    <div class="seccion" id="sec-techo">
+      <div class="seccion-titulo">
+        <div class="icono icono-azul">&#128100;</div>
+        Techo de Capacidad por Perfil
+      </div>
+      <div class="contenido" id="cont-techo"></div>
+    </div>
+
+    <div class="seccion" id="sec-brechas">
+      <div class="seccion-titulo">
+        <div class="icono icono-rojo">&#9888;&#65039;</div>
+        Brechas Críticas Identificadas
+      </div>
+      <div class="contenido" id="cont-brechas"></div>
+    </div>
+
+    <div class="seccion" id="sec-oportunidades">
+      <div class="seccion-titulo">
+        <div class="icono icono-verde">&#127919;</div>
+        Mapa de Oportunidades Futuras
+      </div>
+      <div id="cont-oportunidades"></div>
+    </div>
+
+    <div class="seccion" id="sec-propuestas">
+      <div class="seccion-titulo">
+        <div class="icono icono-morado">&#128196;</div>
+        Propuestas de Servicio Concretas
+      </div>
+      <div id="cont-propuestas"></div>
+    </div>
+
+    <div class="seccion" id="sec-alertas">
+      <div class="seccion-titulo">
+        <div class="icono icono-naranja">&#128680;</div>
+        Señales de Alerta — Urgencia en 6 Meses
+      </div>
+      <div id="cont-alertas"></div>
+    </div>
+
+  </div><!-- fin resultado -->
+
+</div>
+
+<script>
+const PROXY_URL = 'https://script.google.com/macros/s/AKfycbyBSxx1byXrbMKd1ZI9YKbpX3QYXf4Pzl9uT3jaM7LGekp6Pr-2lJ6fjN7xZ-zoOoCJQQ/exec';
+
+async function generarAnalisis() {
+  const btn = document.getElementById('btnGenerar');
+  const loading = document.getElementById('loading');
+  const resultado = document.getElementById('resultado');
+  const errorBox = document.getElementById('errorBox');
+
+  btn.disabled = true;
+  loading.classList.add('active');
+  resultado.classList.remove('visible');
+  errorBox.classList.remove('visible');
+
+  try {
+    const res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accion: 'generar_analisis_gap' })
+    });
+    const data = await res.json();
+
+    if (data.error) throw new Error(data.error);
+
+    renderAnalisis(data.resultado);
+    resultado.classList.add('visible');
+    resultado.scrollIntoView({ behavior: 'smooth' });
+
+  } catch(err) {
+    errorBox.textContent = 'Error: ' + err.message;
+    errorBox.classList.add('visible');
+  } finally {
+    btn.disabled = false;
+    loading.classList.remove('active');
+  }
+}
+
+function renderAnalisis(texto) {
+  // Fecha
+  const ahora = new Date();
+  document.getElementById('fechaPortada').textContent =
+    'Generado: ' + ahora.toLocaleDateString('es-ES', { year:'numeric', month:'long', day:'numeric' }) +
+    ' — ' + ahora.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+
+  // Dividir por secciones numeradas
+  const secciones = extraerSecciones(texto);
+
+  renderSeccion('cont-techo', secciones[1] || texto);
+  renderSeccion('cont-brechas', secciones[2] || '');
+  renderOportunidades('cont-oportunidades', secciones[3] || '');
+  renderPropuestas('cont-propuestas', secciones[4] || '');
+  renderAlertas('cont-alertas', secciones[5] || '');
+}
+
+function extraerSecciones(texto) {
+  const resultado = {};
+  // Busca patrones como "1.", "2.", etc. al inicio de línea
+  const partes = texto.split(/\n(?=\d+\.\s+[A-ZÁÉÍÓÚ])/);
+  partes.forEach(function(parte) {
+    const match = parte.match(/^(\d+)\.\s+/);
+    if (match) {
+      resultado[parseInt(match[1])] = parte.replace(/^\d+\.\s+[^\n]*\n/, '').trim();
+    }
+  });
+  // Si no se encontraron secciones, dividir por encabezados ##
+  if (Object.keys(resultado).length === 0) {
+    const porHash = texto.split(/\n(?=##\s)/);
+    porHash.forEach(function(parte, idx) {
+      resultado[idx + 1] = parte.replace(/^##[^#][^\n]*\n/, '').trim();
+    });
+  }
+  return resultado;
+}
+
+function renderSeccion(id, contenido) {
+  document.getElementById(id).innerHTML = markdownToHtml(contenido);
+}
+
+function renderOportunidades(id, contenido) {
+  const lineas = contenido.split('\n');
+  let html = '';
+  let bloque = '';
+  let nivel = 'media';
+
+  lineas.forEach(function(linea) {
+    const low = linea.toLowerCase();
+    if (low.includes('impacto alto') || low.includes('alto impacto') || low.includes('urgencia: inmediata')) nivel = 'alta';
+    else if (low.includes('impacto medio') || low.includes('6-12 meses')) nivel = 'baja';
+    else if (low.includes('impacto bajo')) nivel = 'baja';
+
+    if (linea.match(/^[-*]\s+\*\*/) || linea.match(/^\d+\.\s+\*\*/)) {
+      if (bloque) html += crearOportunidadCard(bloque, nivel);
+      bloque = linea;
+      nivel = 'media';
+    } else {
+      bloque += '\n' + linea;
+    }
+  });
+  if (bloque) html += crearOportunidadCard(bloque, nivel);
+
+  if (!html) html = '<div class="contenido">' + markdownToHtml(contenido) + '</div>';
+  document.getElementById(id).innerHTML = html;
+}
+
+function crearOportunidadCard(texto, nivel) {
+  const tagMap = { alta: '<span class="tag-impacto tag-alto">Impacto Alto</span>', media: '<span class="tag-impacto tag-medio">Impacto Medio</span>', baja: '<span class="tag-impacto tag-bajo">Impacto Bajo</span>' };
+  return '<div class="oportunidad-card ' + nivel + '">' + tagMap[nivel] + '<div class="contenido">' + markdownToHtml(texto) + '</div></div>';
+}
+
+function renderPropuestas(id, contenido) {
+  const bloques = contenido.split(/\n(?=\d+\.\s+\*\*|Propuesta\s+\d+)/i);
+  let html = '';
+  bloques.forEach(function(bloque, idx) {
+    if (bloque.trim()) {
+      html += '<div class="propuesta-card"><div class="propuesta-num">' + (idx + 1) + '</div>' +
+        '<div class="contenido">' + markdownToHtml(bloque) + '</div></div>';
+    }
+  });
+  if (!html) html = '<div class="contenido">' + markdownToHtml(contenido) + '</div>';
+  document.getElementById(id).innerHTML = html;
+}
+
+function renderAlertas(id, contenido) {
+  const lineas = contenido.split('\n');
+  let html = '';
+  let buffer = '';
+
+  lineas.forEach(function(linea) {
+    if (linea.match(/^[-*]\s+/) || linea.match(/^\d+\.\s+/)) {
+      if (buffer.trim()) {
+        html += '<div class="alerta-card"><div class="alerta-icono">&#9888;&#65039;</div><div class="alerta-texto">' + markdownToHtml(buffer) + '</div></div>';
+        buffer = '';
+      }
+      buffer = linea.replace(/^[-*\d.]\s+/, '');
+    } else if (linea.trim()) {
+      buffer += ' ' + linea;
+    }
+  });
+  if (buffer.trim()) {
+    html += '<div class="alerta-card"><div class="alerta-icono">&#9888;&#65039;</div><div class="alerta-texto">' + markdownToHtml(buffer) + '</div></div>';
+  }
+  if (!html) html = '<div class="contenido">' + markdownToHtml(contenido) + '</div>';
+  document.getElementById(id).innerHTML = html;
+}
+
+function markdownToHtml(texto) {
+  if (!texto) return '';
+  return texto
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, function(m) { return '<ul>' + m + '</ul>'; })
+    .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/\n{2,}/g, '</p><p>')
+    .replace(/^(?!<[hulo])/gm, '')
+    .replace(/(<\/ul>)\s*(<ul>)/g, '')
+    .trim();
+}
+
+function reiniciar() {
+  document.getElementById('resultado').classList.remove('visible');
+  document.getElementById('btnGenerar').disabled = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
