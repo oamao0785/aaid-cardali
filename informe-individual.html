@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe Individual AAID — Cardali Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #c0392b;
+    --primary-light: #e74c3c;
+    --primary-dark: #922b21;
+    --success: #059669;
+    --success-light: #d1fae5;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --danger: #c0392b;
+    --danger-light: #fde8e8;
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #333333;
+    --text-mid: #555555;
+    --text-muted: #666666;
+    --border: #e2e8f0;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 20px 48px rgba(0,0,0,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: #ffffff;
+    color: #333;
+    padding: 0 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-bottom: 3px solid var(--primary);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-content {
+    max-width: 900px; margin: 0 auto;
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 0;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 16px; color: #333;
+    flex-shrink: 0;
+  }
+  .brand img { width: 38px; height: 38px; object-fit: contain; }
+  .header-title { flex: 1; font-size: 15px; font-weight: 600; color: #555; }
+  .header-badge {
+    background: var(--primary); color: white;
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .header-btns { display: flex; gap: 10px; }
+  .btn-volver {
+    padding: 8px 16px; background: transparent; color: var(--text-muted);
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: all .2s;
+  }
+  .btn-volver:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-pdf {
+    padding: 8px 20px; background: var(--primary); color: white;
+    border: none; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: background .2s;
+  }
+  .btn-pdf:hover { background: var(--primary-dark); }
+
+  /* MAIN */
+  .main { max-width: 900px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* SELECTOR CARD */
+  .selector-panel { max-width: 560px; margin: 60px auto 0; }
+
+  .section-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(192,57,43,0.08);
+    color: var(--primary); font-size: 12px; font-weight: 700;
+    padding: 4px 12px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .section-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .section-desc { color: var(--text-muted); font-size: 15px; margin-bottom: 28px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    padding: 32px; margin-bottom: 20px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-mid); }
+
+  select {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px; color: var(--text);
+    background: #f8fafc; font-family: inherit;
+    transition: border-color .2s, box-shadow .2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px;
+  }
+  select:focus { outline: none; border-color: var(--primary-light); background: white; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+
+  .btn-primary {
+    width: 100%; padding: 14px; background: var(--primary); color: white;
+    border: none; border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: background .2s; letter-spacing: 0.3px;
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+  .error-box {
+    background: var(--danger-light); color: var(--danger);
+    border-radius: var(--radius-sm); padding: 12px 16px;
+    font-size: 13px; margin-bottom: 16px; display: none;
+    border: 1px solid rgba(192,57,43,.2);
+  }
+
+  /* LOADING */
+  .loading-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(15,23,42,0.75); backdrop-filter: blur(6px);
+    z-index: 1000; align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+  }
+  .loading-overlay.visible { display: flex; }
+  .spinner {
+    width: 52px; height: 52px;
+    border: 4px solid rgba(255,255,255,.2);
+    border-top-color: white; border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title { color: white; font-size: 18px; font-weight: 700; }
+  .loading-sub { color: rgba(255,255,255,.65); font-size: 13px; }
+
+  /* INFORME CONTENIDO */
+  .informe-contenido { display: none; }
+  .informe-contenido.visible { display: block; }
+
+  /* PORTADA */
+  .portada {
+    background: linear-gradient(135deg, #1a1a2e 0%, #922b21 60%, #c0392b 100%);
+    border-radius: var(--radius); padding: 48px; margin-bottom: 24px; color: white;
+    box-shadow: var(--shadow-lg);
+  }
+  .portada-badge {
+    display: inline-block;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+    padding: 5px 16px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .portada h1 { font-size: 34px; font-weight: 800; margin-bottom: 6px; }
+  .portada-cargo { font-size: 16px; color: rgba(255,255,255,.75); margin-bottom: 28px; }
+  .portada-meta { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 24px; }
+  .portada-meta-label { font-size: 10px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: 1px; }
+  .portada-meta-value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+  .poa-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 22px; border-radius: 30px;
+    font-size: 20px; font-weight: 800;
+  }
+  .poa-alto { background: var(--success-light); color: var(--success); }
+  .poa-medio { background: var(--warning-light); color: var(--warning); }
+  .poa-bajo { background: var(--danger-light); color: var(--danger); }
+
+  /* SECCIONES */
+  .seccion-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 22px; padding-bottom: 14px;
+    border-bottom: 2px solid var(--border);
+  }
+  .seccion-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .seccion-titulo { font-size: 17px; font-weight: 800; color: var(--text); }
+  .seccion-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .texto-analisis { font-size: 14px; line-height: 1.75; color: var(--text-mid); }
+
+  /* DOLOR */
+  .dolor-card {
+    border-radius: 10px; padding: 20px;
+    border-left: 4px solid; margin-bottom: 14px;
+  }
+  .dolor-alta { background: var(--danger-light); border-color: var(--danger); }
+  .dolor-media { background: var(--warning-light); border-color: var(--warning); }
+  .dolor-baja { background: var(--success-light); border-color: var(--success); }
+  .dolor-urgencia { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+  .dolor-alta .dolor-urgencia { color: var(--danger); }
+  .dolor-media .dolor-urgencia { color: var(--warning); }
+  .dolor-baja .dolor-urgencia { color: var(--success); }
+  .dolor-tipo { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .dolor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .campo-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
+  .campo-valor { font-size: 13px; line-height: 1.5; }
+
+  /* PROCESO */
+  .proceso-card { border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 14px; }
+  .proceso-nombre { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+  .proceso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* OPORTUNIDAD */
+  .op-card { border: 1px solid var(--border); border-radius: 10px; padding: 22px; margin-bottom: 16px; }
+  .op-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
+  .op-titulo { font-size: 15px; font-weight: 800; }
+  .op-herramienta {
+    background: rgba(192,57,43,.08); color: var(--primary);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap;
+  }
+  .op-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 14px; }
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-alto { background: var(--success-light); color: var(--success); }
+  .badge-medio { background: var(--warning-light); color: var(--warning); }
+  .badge-bajo { background: #f1f5f9; color: var(--text-muted); }
+  .badge-neutro { background: rgba(192,57,43,.08); color: var(--primary); }
+  .op-pasos { background: var(--bg); border-radius: 8px; padding: 16px; }
+  .op-pasos-titulo { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .op-paso { display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .op-num {
+    width: 22px; height: 22px; background: var(--primary); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* HOJA DE RUTA */
+  .ruta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 680px) { .ruta-grid { grid-template-columns: 1fr; } }
+  .ruta-col { border-radius: 10px; padding: 20px; }
+  .ruta-30 { background: var(--danger-light); }
+  .ruta-60 { background: var(--warning-light); }
+  .ruta-90 { background: var(--success-light); }
+  .ruta-titulo { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .ruta-30 .ruta-titulo { color: var(--danger); }
+  .ruta-60 .ruta-titulo { color: var(--warning); }
+  .ruta-90 .ruta-titulo { color: var(--success); }
+  .ruta-item { display: flex; gap: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; }
+  .ruta-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .ruta-30 .ruta-dot { background: var(--danger); }
+  .ruta-60 .ruta-dot { background: var(--warning); }
+  .ruta-90 .ruta-dot { background: var(--success); }
+
+  /* SKILLS */
+  .skill-card { display: flex; gap: 14px; padding: 16px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; }
+  .skill-bar { width: 5px; border-radius: 4px; flex-shrink: 0; align-self: stretch; }
+  .skill-alta { background: var(--danger); }
+  .skill-media { background: var(--warning); }
+  .skill-baja { background: var(--success); }
+  .skill-nombre { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .skill-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .skill-dur { font-size: 12px; color: var(--primary); font-weight: 600; margin-top: 6px; }
+
+  /* RECOMENDACION */
+  .rec-box {
+    background: linear-gradient(135deg, #1a1a2e 0%, #922b21 100%);
+    border-radius: var(--radius); padding: 32px; color: white;
+  }
+  .rec-box h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: .6; margin-bottom: 14px; }
+  .rec-box p { font-size: 15px; line-height: 1.8; }
+
+  /* PRINT */
+  @media print {
+    .header .header-btns { display: none; }
+    .main { padding: 0; max-width: 100%; }
+    .card { box-shadow: none; break-inside: avoid; }
+    .portada { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .ruta-30, .ruta-60, .ruta-90, .dolor-alta, .dolor-media, .dolor-baja, .rec-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header" id="mainHeader">
+  <div class="header-content">
+    <div class="brand">
+      <img src="https://cardaligroup.com/wp-content/uploads/2024/05/fav_logo_cg.png" alt="Cardali" onerror="this.style.display='none'">
+      Cardali Group
+    </div>
+    <div class="header-title">Programa AAID — Informes Individuales</div>
+    <div class="header-badge" id="headerBadge">Seleccionar Empleado</div>
+    <div class="header-btns" id="headerBtns" style="display:none">
+      <button class="btn-volver" onclick="volver()">← Nuevo informe</button>
+      <button class="btn-pdf" onclick="window.print()">⬇ Descargar PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-title">Generando informe ejecutivo</div>
+  <div class="loading-sub">Claude está analizando los datos del empleado...</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SELECTOR -->
+  <div id="selectorPanel">
+    <div class="selector-panel">
+      <div class="section-badge">Diagnóstico Individual</div>
+      <div class="section-title">Informe Ejecutivo por Empleado</div>
+      <div class="section-desc">Selecciona un empleado para generar su diagnóstico completo con hoja de ruta y recomendaciones personalizadas.</div>
+
+      <div class="card">
+        <div class="error-box" id="errorBox"></div>
+        <div class="form-group">
+          <label>Empleado</label>
+          <select id="selectEmpleado">
+            <option value="">Cargando empleados...</option>
+          </select>
+        </div>
+        <button class="btn-primary" id="btnGenerar" onclick="generarInforme()" disabled>
+          Generar Informe Ejecutivo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFORME -->
+  <div id="informeContenido" class="informe-contenido"></div>
+
+</div>
+
+<script>
+  const PROXY_URL = 'https://script.google.com/macros/s/AKfycbyBSxx1byXrbMKd1ZI9YKbpX3QYXf4Pzl9uT3jaM7LGekp6Pr-2lJ6fjN7xZ-zoOoCJQQ/exec';
+  let empleados = [];
+
+  window.onload = async function() {
+    try {
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ accion: 'listar_empleados' })
+      });
+      const data = await res.json();
+      empleados = data.empleados || [];
+      const sel = document.getElementById('selectEmpleado');
+      if (empleados.length === 0) {
+        sel.innerHTML = '<option value="">No hay empleados registrados</option>';
+      } else {
+        sel.innerHTML = '<option value="">— Selecciona un empleado —</option>' +
+          empleados.map(e => `<option value="${e.fila}">${e.nombre} — ${e.cargo}${e.departamento ? ' ('+e.departamento+')' : ''}</option>`).join('');
+        document.getElementById('btnGenerar').disabled = false;
+      }
+    } catch(err) {
+      mostrarError('No se pudo cargar la lista: ' + err.message);
+    }
+  };
+
+  async function generarInforme() {
+    const fila = document.getElementById('selectEmpleado').value;
+    if (!fila) { mostrarError('Selecciona un empleado.'); return; }
+    ocultarError();
+    document.getElementById('loadingOverlay').classList.add('visible');
+    try {
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ accion: 'generar_informe', fila: parseInt(fila) })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      const informe = parsearJSON(data.resultado);
+      const emp = data.empleado || {};
+      document.getElementById('loadingOverlay').classList.remove('visible');
+      document.getElementById('selectorPanel').style.display = 'none';
+      document.getElementById('headerBadge').style.display = 'none';
+      document.getElementById('headerBtns').style.display = 'flex';
+      const cont = document.getElementById('informeContenido');
+      cont.innerHTML = renderInforme(informe, emp);
+      cont.classList.add('visible');
+    } catch(err) {
+      document.getElementById('loadingOverlay').classList.remove('visible');
+      mostrarError('Error: ' + err.message);
+    }
+  }
+
+  function volver() {
+    document.getElementById('informeContenido').classList.remove('visible');
+    document.getElementById('informeContenido').innerHTML = '';
+    document.getElementById('selectorPanel').style.display = 'block';
+    document.getElementById('headerBadge').style.display = 'flex';
+    document.getElementById('headerBtns').style.display = 'none';
+  }
+
+  function parsearJSON(txt) {
+    try { return JSON.parse(txt.trim()); }
+    catch(e) {
+      const m = txt.match(/\{[\s\S]*\}/);
+      if (m) return JSON.parse(m[0]);
+      throw new Error('No se pudo interpretar la respuesta.');
+    }
+  }
+
+  function mostrarError(msg) {
+    const el = document.getElementById('errorBox');
+    el.textContent = msg; el.style.display = 'block';
+  }
+  function ocultarError() { document.getElementById('errorBox').style.display = 'none'; }
+
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  function poaCls(v) { const n=parseFloat(v)||0; return n>=70?'poa-alto':n>=45?'poa-medio':'poa-bajo'; }
+  function badgeCls(v) { const n=(v||'').toLowerCase(); return n==='alto'?'badge-alto':n==='medio'?'badge-medio':'badge-bajo'; }
+  function dolorCls(v) { const n=(v||'').toLowerCase(); return n==='alta'?'dolor-alta':n==='media'?'dolor-media':'dolor-baja'; }
+  function skillCls(v) { const n=(v||'').toLowerCase(); return n==='alta'?'skill-alta':n==='media'?'skill-media':'skill-baja'; }
+
+  function renderInforme(inf, emp) {
+    const fecha = new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
+    let h = '';
+
+    // PORTADA
+    h += `<div class="portada">
+      <div class="portada-badge">Informe Ejecutivo Individual — Programa AAID</div>
+      <h1>${emp['Nombre']||'—'}</h1>
+      <div class="portada-cargo">${emp['Cargo']||''}${emp['Departamento']?' · '+emp['Departamento']:''}</div>
+      <div class="portada-meta">
+        <div><div class="portada-meta-label">Antigüedad</div><div class="portada-meta-value">${emp['Antiguedad']||'—'}</div></div>
+        <div><div class="portada-meta-label">Nivel IA Actual</div><div class="portada-meta-value">${emp['Nivel IA Descripcion']||'—'}</div></div>
+        <div><div class="portada-meta-label">Nivel de Madurez</div><div class="portada-meta-value">${emp['Nivel Madurez']||'—'}</div></div>
+        <div><div class="portada-meta-label">Fecha del Informe</div><div class="portada-meta-value">${fecha}</div></div>
+      </div>
+      <div class="poa-pill ${poaCls(emp['POA Score'])}">POA Score: ${emp['POA Score']||'—'} / 100</div>
+    </div>`;
+
+    // RESUMEN EJECUTIVO
+    if (inf.resumen_ejecutivo) {
+      h += `<div class="card">
+        <div class="seccion-header">
+          <div class="seccion-icon" style="background:rgba(192,57,43,.08)">📋</div>
+          <div><div class="seccion-titulo">Resumen Ejecutivo</div><div class="seccion-sub">Visión general del perfil y situación actual</div></div>
+        </div>
+        <p class="texto-analisis">${inf.resumen_ejecutivo}</p>
+      </div>`;
+    }
+
+    // DIAGNOSTICO MADUREZ
+    if (inf.diagnostico_madurez) {
+      h += `<div class="card">
+        <div class="seccion-header">
+          <div class="seccion-icon" style="background:rgba(192,57,43,.08)">🎯</div>
+          <div><div class="seccion-titulo">Diagnóstico de Madurez IA</div><div class="seccion-sub">Análisis del nivel actual y brecha con el ideal</div></div>
+        </div>
+        <p class="texto-analisis">${inf.diagnostico_madurez}</p>
+      </div>`;
+    }
+
+    // DOLORES
+    if (inf.analisis_dolores && inf.analisis_dolores.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header">
+          <div class="seccion-icon" style="background:var(--danger-light)">⚠️</div>
+          <div><div class="seccion-titulo">Análisis de Dolores y Cuellos de Botella</div><div class="seccion-sub">Problemas críticos con causa raíz e impacto en el negocio</div></div>
+        </div>`;
+      inf.analisis_dolores.forEach(d => {
+        h += `<div class="dolor-card ${dolorCls(d.urgencia)}">
+          <div class="dolor-urgencia">Urgencia: ${cap(d.urgencia)}</div>
+          <div class="dolor-tipo">${d.tipo||''}</div>
+          <div class="dolor-grid">
+            <div><div class="campo-label">Descripción</div><div class="campo-valor">${d.descripcion||''}</div></div>
+            <div><div class="campo-label">Causa Raíz</div><div class="campo-valor">${d.causa_raiz||''}</div></div>
+            <div style="grid-column:1/-1"><div class="campo-label">Impacto en el Negocio</div><div class="campo-valor">${d.impacto_negocio||''}</div></div>
+          </div>
+        </div>`;
+      });
+      h += '</div>';
+    }
+
+    // PROCESOS
+    if (inf.procesos_criticos && inf.procesos_criticos.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header">
+          <div class="seccion-icon" style="background:rgba(192,57,43,.08)">⚙️</div>
+          <div><div class="seccion-titulo">Procesos Críticos y Soluciones IA</div><div class="seccion-sub">Cómo la inteligencia artificial transforma cada proceso</div></div>
+        </div>`;
+      inf.procesos_criticos.forEach(p => {
+        h += `<div class="proceso-card">
+          <div class="proceso-nombre">${p.nombre||''}</div>
+          <div class="proceso-grid">
+            <div><div class="campo-label">Problema Actual</div><div class="campo-valor">${p.problema||''}</div></div>
+            <div><div class="campo-label">Solución con IA</div><div class="campo-valor">${p.solucion_ia||''}</div></div>
+            <div><div class="campo-label">Herramienta Recomendada</div><div class="campo-valor">${p.herramienta||''}</div></div>
+            <div><div class="campo-label">Ahorro Estimado</div><div class="campo-valor">${p.ahorro_estimado||''}</div></div>
+          </div>
+        </div>`;
+      });
+      h += '</div>';
+    }
+
+    // OPORTUNIDADES
+    if (inf.oportunidades_priorizadas && inf.oportunidades_priorizadas.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header">
+          <div class="seccion-icon" style="background:var(--success-light)">🚀</div>
+          <div><div class="seccion-titulo">Oportunidades de IA Priorizadas</div><div class="seccion-sub">Iniciativas ordenadas por impacto y facilidad de implementación</div></div>
+        </div>`;
+      inf.oportunidades_priorizadas.forEach((op,i) => {
+        h += `<div class="op-card">
+          <div class="op-header">
+            <div class="op-titulo">${i+1}. ${op.titulo||''}</div>
+            <div class="op-herramienta">${op.herramienta||''}</div>
+          </div>
+          <div class="op-desc">${op.descripcion||''}</div>
+          <div class="badge-row">
+            <span class="badge ${badgeCls(op.impacto)}">Impacto: ${cap(op.impacto)}</span>
+            <span class="badge ${badgeCls(op.esfuerzo)}">Esfuerzo: ${cap(op.esfuerzo)}</span>
+            ${op.ahorro?`<span class="badge badge-neutro">Ahorro: ${op.ahorro}</span>`:''}
+          </div>`;
+        if (op.pasos_implementacion && op.pasos_implementacion.length > 0) {
+          h += `<div class="op-pasos"><div class="op-pasos-titulo">Pasos de implementación</div>`;
+          op.pasos_implementacion.forEach((paso,j) => {
+            h += `<div class="op-paso"><div class="op-num">${j+1}</div><div>${paso}</div></div>`;
+          });
+          h += '</div>';
+        }
+        h += '</div>';
+      });
+      h += '</div>';
+    }
+
+    // HOJA DE RUTA
+    if (inf.hoja_de_ruta) {
+      const r = inf.hoja_de_ruta;
+      h += `<div class="card">
+        <div class="seccion-header">
+          <div class="seccion-icon" style="background:var(--warning-light)">🗺️</div>
+          <div><div class="seccion-titulo">Hoja de Ruta Personalizada</div><div class="seccion-sub">Plan de acción en 90 días para adoptar IA</div></div>
+        </div>
+        <div class="ruta-grid">`;
+      [
+        {key:'primeros_30_dias',label:'Primeros 30 días',cls:'ruta-30'},
+        {key:'dias_31_a_60',label:'Días 31 a 60',cls:'ruta-60'},
+        {key:'dias_61_a_90',label:'Días 61 a 90',cls:'ruta-90'}
+      ].forEach(col => {
+        h += `<div class="ruta-col ${col.cls}"><div class="ruta-titulo">${col.label}</div>`;
+        (r[col.key]||[]).forEach(item => {
+          h += `<div class="ruta-item"><div class="ruta-dot"></div><div>${item}</div></div>`;
+        });
+        h += '</div>';
+      });
+      h += '</div></div>';
+    }
+
+    // SKILLS
+    if (inf.skills_recomendados && inf.skills_recomendados.length > 0) {
+      h += `<div class="card">
+        <div class="seccion-header">
+          <div class="seccion-icon" style="background:rgba(192,57,43,.08)">🎓</div>
+          <div><div class="seccion-titulo">Skills Recomendados</div><div class="seccion-sub">Capacitaciones prioritarias para este perfil</div></div>
+        </div>`;
+      inf.skills_recomendados.forEach(sk => {
+        h += `<div class="skill-card">
+          <div class="skill-bar ${skillCls(sk.prioridad)}"></div>
+          <div>
+            <div class="skill-nombre">${sk.nombre||''}</div>
+            <div class="skill-desc">${sk.descripcion||''}</div>
+            ${sk.duracion_estimada?`<div class="skill-dur">⏱ ${sk.duracion_estimada}</div>`:''}
+          </div>
+        </div>`;
+      });
+      h += '</div>';
+    }
+
+    // RECOMENDACION FINAL
+    if (inf.recomendacion_final) {
+      h += `<div class="rec-box">
+        <h3>Recomendación Estratégica para Gerencia</h3>
+        <p>${inf.recomendacion_final}</p>
+      </div>`;
+    }
+
+    return h;
+  }
+</script>
+</body>
+</html>
